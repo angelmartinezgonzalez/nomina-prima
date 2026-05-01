@@ -22,3 +22,10 @@ psycopg==3.3.3
 cryptography==46.0.7
 pyOpenSSL==26.0.0
 lxml==6.0.3
+requests==2.33.1
+pycurl==7.45.7
+qrcode==8.2
+weasyprint==68.1
+reportbro-lib==3.12.1
+hidash==0.2.29
+bokeh==3.9.0

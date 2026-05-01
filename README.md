@@ -296,7 +296,7 @@ Para dudas sobre implementación o configuración fiscal, consultar con el equip
 # INSTALACION
 
 ## Componentes
- 
+
 
 
 **Para Windows** **Utiliza python 3.10.0**
@@ -346,6 +346,7 @@ mod_wsgi== 4.9.4
 ## 🚀 Inicio del Proyecto (Setup básico)
 ir al directorio  donde se tiene el proyecto
 patht \\nomina-prima\src
+
 ```bash
 # Crear entorno virtual
 python -m venv venv
@@ -356,16 +357,6 @@ venv\Scripts\activate
 pip install -r requirements.txt
 
 # Instalar Django
-pip install django
-pip install Django==5.2.13
-
-pip install psycopg2-binary
-psycopg2-binary   2.9.11
-psycopg           3.3.3
-
-cryptography==42.0.5
-pyOpenSSL==24.1.0
-
 pip install Django==5.2.13
 pip install django-bootstrap5==26.1
 pip install djangorestframework==3.17.1
@@ -390,6 +381,15 @@ pip install psycopg==3.3.3
 pip install cryptography==46.0.7
 pip install pyOpenSSL==26.0.0
 pip install lxml==6.0.3
+pip install requests==2.33.1
+pip install pycurl==7.45.7
+pip install qrcode[pil] pillow
+pip install qrcode==8.2
+pip install weasyprint==68.1
+pip install reportbro-lib==3.12.1
+pip install hidash==0.2.29
+pip install bokeh==3.9.0
+        
 
 
 # Crear proyecto
@@ -414,17 +414,22 @@ ctrl+c
 
 
 
-## 🧪 Desarrollo en Windows
+## 🧪 Desarrollo en Windows con Apache2
 
-### 1. Clonar repositorio
+### 1. Ir a el directorio donde tienes apache
+```bash
+C:\Apache24
+```
+
+### 2. Clonar repositorio
 
 ```bash
-git clone https://github.com/tuusuario/nomina-prima.git
-cd nomina-prima
+git clone https://github.com/angelmartinezgonzalez/nomina-prima.git htdocs
+cd htdocs\src
 ```
 
 
-### 2. Crear entorno virtual
+### 3. Crear entorno virtual
 
 ```bash
 python -m venv venv
@@ -439,18 +444,143 @@ pip install -r requirements.txt
 ```
 
 
-### 4. Configurar variables de entorno
+Paso 3.1: Configurar mod_wsgi
+
+Después de instalar mod_wsgi, ejecuta:
+bash
+```bash
+mod_wsgi-express module-config
+```
+da algo asi
 
 ```bash
-DEBUG=True
-SECRET_KEY=tu_clave_secreta
-DB_NAME=nomina
-DB_USER=postgres
-DB_PASSWORD=tu_password
-DB_HOST=localhost
-DB_PORT=5432
+LoadFile "C:/Python310/python310.dll"
+LoadModule wsgi_module "C:/Python310/lib/site-packages/mod_wsgi/server/mod_wsgi.cp310-win_amd64.pyd"
+WSGIPythonHome "C:/Python310"
 ```
 
+
+
+Para windows. crear archvivo wsgi_windows.py
+
+en donde se encuantra el archivo que es para linux
+wsgi.py 
+
+Ajustando el contenido deacuerdo a tu instalacion 
+
+```bash
+
+import os
+import sys
+import site
+
+# Add the site-packages of the chosen virtualenv to work with
+site.addsitedir('C:/Python310/Lib/site-packages/')
+
+# Add the app's directory to the PYTHONPATH
+sys.path.append('C:/Apache24/htdocs/src/nomina_prima/')
+sys.path.append('C:/Apache24/htdocs/src/nomina_prima/nomina_prima/')
+
+os.environ['DJANGO_SETTINGS_MODULE'] = 'nomina_prima.settings'
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "nomina_prima.settings")
+
+from django.core.wsgi import get_wsgi_application
+application = get_wsgi_application()
+
+
+
+```
+
+
+
+### 4. Configurar servidor apache
+
+
+Para usar un nombre de dominio localmente modiciar el archivo de hosts.
+por ejemplo
+www.nomina-prima.com.mx
+C:\Windows\System32\drivers\etc\hosts
+
+```bash
+127.0.0.2 www.nomina-prima.com.mx nomina-prima.com.mx
+```
+
+Apache modificar el archivo **httpd.conf**
+
+Al final del archivo **httpd.conf**
+```bash
+
+LoadFile "C:/Python310/python310.dll"
+LoadModule wsgi_module "C:/Python310/Lib/site-packages/mod_wsgi/server/mod_wsgi.cp310-win_amd64.pyd"
+WSGIPythonHome "C:/Python10"
+WSGIPythonPath "C:\Python10\Lib\site-packages"
+```
+
+Modificar Virtual host
+C:\Apache24\conf\extra\httpd-vhosts.conf
+
+```bash
+<VirtualHost *:80>
+ServerAlias www.nomina-prima.com.mx
+ServerName nomina-prima.com.mx
+ServerAdmin info@nomina-prima.com.mx
+WSGIScriptAlias / "C:/Apache24NominaPrima/htdocs/src/nomina_prima/nomina_prima/wsgi_windows.py"
+  <Directory "C:/Apache24NominaPrima/htdocs/src/nomina_prima/nomina_prima/">
+    <Files wsgi_windows.py>
+		Require all granted
+    </Files>
+		Require all granted
+  </Directory>
+
+Alias /static/ "C:/Apache24NominaPrima/htdocs/src/nomina_prima/content/static/"
+  <Directory "C:/Apache24NominaPrima/htdocs/src/nomina_prima/content/static/">
+    Require all granted
+  </Directory>
+
+ErrorLog "C:/Apache24NominaPrima/htdocs/src/nomina_prima/logs/apache.error.log"
+CustomLog "C:/Apache24NominaPrima/htdocs/src/nomina_prima/logs/apache.custom.log" common
+</VirtualHost>
+
+```
+
+
+
+
+## Ejecutar localmente
+ir al directorio donde se tienen la aplicacion
+
+Ejecutar coleccion de staticos
+```bash
+<Directorio>\manage.py collectstatic
+```
+
+
+Hacer la migracion
+
+```bash
+<Directorio>\python manage.py makemigrations
+
+```
+
+Migrar 
+
+```bash
+<Directorio>\python manage.py migrate
+```
+Ejecutar el projecto:
+
+```bash
+<Directorio>python manage.py runserver
+```
+
+
+
+Navegar al sitio web del projecto:
+
+```bash
+http://www.cfdireporteweb.com/
+```
+  
 
 ### 5. Migraciones
 
