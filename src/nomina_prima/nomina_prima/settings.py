@@ -27,12 +27,21 @@ DEBUG = True
 
 #ALLOWED_HOSTS = []
 
+'''
 ALLOWED_HOSTS = [
     'www.nomina-prima.com.mx',
+    'www.nomina-prima.com.mx:8095',
     'nomina-prima.com.mx',
     'localhost',
     '127.0.0.1',
 ]
+'''
+
+
+ALLOWED_HOSTS = [
+    '*', 
+]
+
 
 
 # Application definition
