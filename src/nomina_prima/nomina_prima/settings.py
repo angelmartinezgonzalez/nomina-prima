@@ -25,7 +25,14 @@ SECRET_KEY = 'django-insecure-a-zwt75b3q-698#4y6@#sb37fy5z3&!x*9pjbclh%k7iy9$svx
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+#ALLOWED_HOSTS = []
+
+ALLOWED_HOSTS = [
+    'www.nomina-prima.com.mx',
+    'nomina-prima.com.mx',
+    'localhost',
+    '127.0.0.1',
+]
 
 
 # Application definition

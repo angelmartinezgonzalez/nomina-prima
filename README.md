@@ -495,10 +495,10 @@ application = get_wsgi_application()
 
 ### 4. Configurar servidor apache
 
-
 Para usar un nombre de dominio localmente modiciar el archivo de hosts.
 por ejemplo
 www.nomina-prima.com.mx
+
 C:\Windows\System32\drivers\etc\hosts
 
 ```bash
@@ -517,10 +517,14 @@ WSGIPythonPath "C:\Python10\Lib\site-packages"
 ```
 
 Modificar Virtual host
-C:\Apache24\conf\extra\httpd-vhosts.conf
+
 
 ```bash
-<VirtualHost *:80>
+#poner el puerto que uses
+Listen 8095
+
+## para que funcione el virtual host seria en el mismo puerto 
+<VirtualHost *:8095>
 ServerAlias www.nomina-prima.com.mx
 ServerName nomina-prima.com.mx
 ServerAdmin info@nomina-prima.com.mx
@@ -541,36 +545,98 @@ ErrorLog "C:/Apache24NominaPrima/htdocs/src/nomina_prima/logs/apache.error.log"
 CustomLog "C:/Apache24NominaPrima/htdocs/src/nomina_prima/logs/apache.custom.log" common
 </VirtualHost>
 
+
 ```
 
 
+Sin virtualhost
+
+```bash
+#poner el puerto que uses
+Listen 8095
+
+
+LoadFile "C:/Python310/python310.dll"
+LoadModule wsgi_module "C:/Python310/Lib/site-packages/mod_wsgi/server/mod_wsgi.cp310-win_amd64.pyd"
+WSGIPythonHome "C:/Python310"
+WSGIPythonPath "C:\Python310\Lib\site-packages"
+
+# Configuración directa (SIN VirtualHost)
+WSGIScriptAlias / "C:/Apache24NominaPrima/htdocs/src/nomina_prima/nomina_prima/wsgi_windows.py"
+
+<Directory "C:/Apache24NominaPrima/htdocs/src/nomina_prima/nomina_prima/">
+    Require all granted
+</Directory>
+
+Alias /static/ "C:/Apache24NominaPrima/htdocs/src/nomina_prima/content/static/"
+<Directory "C:/Apache24NominaPrima/htdocs/src/nomina_prima/content/static/">
+    Require all granted
+</Directory>
+
+ErrorLog "C:/Apache24NominaPrima/htdocs/src/nomina_prima/logs/apache.error.log"
+CustomLog "C:/Apache24NominaPrima/htdocs/src/nomina_prima/logs/apache.custom.log" common
+
+
+
+```
+
+
+
+en el archivo
+```bash
+nomina-prima\src\nomina_prima\nomina_prima\settings.py
+```
+
+ permitir el acceso a los ips
+```bash
+#ALLOWED_HOSTS = []
+
+ALLOWED_HOSTS = [
+    'www.nomina-prima.com.mx',
+    'nomina-prima.com.mx',
+    'localhost',
+    '127.0.0.1',
+]
+
+```
 
 
 ## Ejecutar localmente
 ir al directorio donde se tienen la aplicacion
 
+ejecutar entorno virtual si se tiene o si no se tiene una instalacion de python global
+```bash
+venv\Scripts\activate
+```
+debe de mostrar que esta activo
+
+```bash
+(venv) C:\nomina-prima\src\nomina_prima>
+```
+
+
 Ejecutar coleccion de staticos
 ```bash
-<Directorio>\manage.py collectstatic
+\nomina_prima\manage.py collectstatic
 ```
 
 
 Hacer la migracion
 
 ```bash
-<Directorio>\python manage.py makemigrations
+<Directorio>\nomina_prima\python manage.py makemigrations
 
 ```
 
 Migrar 
 
 ```bash
-<Directorio>\python manage.py migrate
+<Directorio>\nomina_prima\python manage.py migrate
 ```
 Ejecutar el projecto:
 
 ```bash
-<Directorio>python manage.py runserver
+<Directorio>nomina_prima\python manage.py runserver
 ```
 
 
@@ -578,17 +644,15 @@ Ejecutar el projecto:
 Navegar al sitio web del projecto:
 
 ```bash
-http://www.cfdireporteweb.com/
+www.nomina-prima.com.mx
 ```
-  
 
-### 5. Migraciones
 
+
+para cerrar la aplicacion
 ```bash
-python manage.py makemigrations
-python manage.py migrate
+Ctrl+C
 ```
-
 
 ### 1. 6. Ejecutar servidor
 
@@ -598,6 +662,15 @@ python manage.py runserver
 
 👉 Acceder: http://127.0.0.1:8000
 
+si es instalacion inicial se debe de ver el django 
+```bash
+The install worked successfully! Congratulations!
+View release notes for Django 5.2
+
+You are seeing this page because DEBUG=True is in your settings file and you have not configured any URLs.
+
+Django
+```
 ## 🐘 Configuración PostgreSQL (Windows)
 Instalar PostgreSQL
 Crear base de datos:
