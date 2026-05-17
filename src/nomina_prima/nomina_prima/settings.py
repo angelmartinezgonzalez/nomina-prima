@@ -37,7 +37,7 @@ ALLOWED_HOSTS = [
 ]
 '''
 
-
+##para desarrollo permitir todas las conexiones entrantes
 ALLOWED_HOSTS = [
     '*', 
 ]
