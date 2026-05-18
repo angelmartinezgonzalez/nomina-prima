@@ -15,8 +15,8 @@ import sys
 site.addsitedir('C:/Python314/Lib/site-packages/')
 
 # Add the app's directory to the PYTHONPATH
-sys.path.append('C:/Apache24NominaPrima/htdocs/src/nomina_prima/')
-sys.path.append('C:/Apache24NominaPrima/htdocs/src/nomina_prima/nomina_prima/')
+sys.path.append('C:/Apache24NominaPrima/demo1/src/nomina_prima/')
+sys.path.append('C:/Apache24NominaPrima/demo1/src/nomina_prima/nomina_prima/')
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'nomina_prima.settings'
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "nomina_prima.settings")
